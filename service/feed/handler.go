@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	apiLog "github.com/prometheus/common/log"
+	servLog "github.com/prometheus/common/log"
 	feed "simple-douyin/kitex_gen/feed"
 	"simple-douyin/service/feed/service"
 )
@@ -17,8 +17,16 @@ func (s *FeedServiceImpl) Feed(ctx context.Context, req *feed.FeedRequest) (*fee
 
 	resp, err := service.Feed(ctx, req)
 	if err != nil {
-		apiLog.Error(err)
-		return nil, err
+		servLog.Error(err)
+		if resp == nil {
+			resp = feed.NewFeedResponse()
+		}
+		resp.StatusCode = 57002
+		if resp.StatusMsg == nil {
+			resp.StatusMsg = new(string)
+		}
+		*resp.StatusMsg = err.Error()
+		return resp, err
 	}
 
 	return resp, nil

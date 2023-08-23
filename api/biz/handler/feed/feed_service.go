@@ -21,7 +21,7 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 	resp := new(bizFeed.FeedResponse)
 	err = c.BindAndValidate(&bizReq)
 	if err != nil {
-		apiLog.Info(err)
+		apiLog.Error(err)
 		resp.StatusCode = 57002
 		if resp.StatusMsg == nil {
 			resp.StatusMsg = new(string)
@@ -32,52 +32,17 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 
 	var userId = new(int64)
 	apiLog.Info("Token: ", bizReq.GetToken())
-	// 这里对token进行校验
 
-	// 这里token是nil时，在路由时鉴权会报错
-	//loggedClaims, exist := c.Get("JWT_PAYLOAD")
-	//if !exist {
-	//	resp.StatusCode = 57002
-	//	if resp.StatusMsg == nil {
-	//		resp.StatusMsg = new(string)
-	//	}
-	//	*resp.StatusMsg = "Unauthorized"
-	//	c.JSON(consts.StatusOK, resp)
-	//	return
-	//}
-	//userId = int64(loggedClaims.(jwt.MapClaims)[mw.JwtMiddleware.IdentityKey].(float64))
-
+	// 当前的策略的是，有token，进行鉴权，若非法（包含过期），则不返回视频；无token则正常返回视频
 	if bizReq.Token != nil {
-		_, err := mw.JwtMiddleware.ParseTokenString(*bizReq.Token)
-		if err != nil {
-			apiLog.Info(err)
-			resp.StatusCode = 57002
-			if resp.StatusMsg == nil {
-				resp.StatusMsg = new(string)
-			}
-			*resp.StatusMsg = "Unauthorized"
-			c.JSON(consts.StatusBadRequest, resp)
-			return
-		}
-		// 用户token失效了也能用feed
-		_, err = mw.JwtMiddleware.CheckIfTokenExpire(ctx, c)
-		if err != nil {
-			apiLog.Info(err)
-			resp.StatusCode = 0
-			if resp.StatusMsg == nil {
-				resp.StatusMsg = new(string)
-			}
-			*resp.StatusMsg = "token expired"
-			c.JSON(consts.StatusOK, resp)
-		}
 		claims, err := mw.JwtMiddleware.GetClaimsFromJWT(ctx, c)
 		if err != nil {
-			apiLog.Info(err)
+			apiLog.Error(err)
 			resp.StatusCode = 57002
 			if resp.StatusMsg == nil {
 				resp.StatusMsg = new(string)
 			}
-			*resp.StatusMsg = "Unauthorized"
+			*resp.StatusMsg = err.Error()
 			c.JSON(consts.StatusBadRequest, resp)
 			return
 		}
@@ -94,7 +59,7 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 	resp, err = client.Feed(ctx, &req)
 
 	if err != nil {
-		apiLog.Info(err)
+		apiLog.Error(err)
 		resp.StatusCode = 57002
 		if resp.StatusMsg == nil {
 			resp.StatusMsg = new(string)
