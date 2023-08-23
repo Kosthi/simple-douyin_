@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	servLog "github.com/prometheus/common/log"
-	feed "simple-douyin/kitex_gen/feed"
+	"simple-douyin/kitex_gen/feed"
 	"simple-douyin/service/feed/service"
 )
 
