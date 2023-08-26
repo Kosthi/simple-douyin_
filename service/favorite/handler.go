@@ -5,7 +5,7 @@ import (
 	favorite "simple-douyin/kitex_gen/favorite"
 	service "simple-douyin/service/favorite/service"
 
-	servLog "github.com/prometheus/common/log"
+	servLog "github.com/sirupsen/logrus"
 )
 
 // FavoriteServiceImpl implements the last service interface defined in the IDL.
@@ -84,7 +84,6 @@ func (s *FavoriteServiceImpl) FavoriteList(ctx context.Context, req *favorite.Fa
 	// 后处理返回结果
 	// ...
 	return resp, nil
-	return
 }
 
 // UserFavorCount implements the FavoriteServiceImpl interface.

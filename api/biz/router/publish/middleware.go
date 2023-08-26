@@ -38,5 +38,6 @@ func _listMw() []app.HandlerFunc {
 }
 
 func _publishlistMw() []app.HandlerFunc {
-	return []app.HandlerFunc{mw.JwtMiddleware.MiddlewareFunc()}
+	// return []app.HandlerFunc{mw.JwtMiddleware.MiddlewareFunc()}
+	return nil
 }

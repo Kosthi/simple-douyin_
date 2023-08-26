@@ -4,13 +4,14 @@ package feed
 
 import (
 	"context"
-	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
-	apiLog "github.com/prometheus/common/log"
 	"simple-douyin/api/biz/client"
 	mw "simple-douyin/api/biz/middleware"
 	bizFeed "simple-douyin/api/biz/model/feed"
 	"simple-douyin/kitex_gen/feed"
+
+	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	apiLog "github.com/sirupsen/logrus"
 )
 
 // Feed .
@@ -37,8 +38,8 @@ func Feed(ctx context.Context, c *app.RequestContext) {
 	if bizReq.Token != nil {
 		claims, err := mw.JwtMiddleware.GetClaimsFromJWT(ctx, c)
 		if err != nil {
-			apiLog.Error(err)
-			resp.StatusCode = 57002
+			apiLog.Info(err)
+			resp.StatusCode = 57001
 			if resp.StatusMsg == nil {
 				resp.StatusMsg = new(string)
 			}

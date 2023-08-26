@@ -1,6 +1,6 @@
 package client
 
-import apiLog "github.com/prometheus/common/log"
+import apiLog "github.com/sirupsen/logrus"
 
 func InitClient() {
 	InitPingClient()
@@ -8,5 +8,8 @@ func InitClient() {
 	InitFeedClient()
 	InitPublishClient()
 	InitFavoriteClient()
+	InitCommentClient()
+	InitRelationClient()
+	InitMessaggeClient()
 	apiLog.Info("All RPC client initialized")
 }
